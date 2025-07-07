@@ -8,8 +8,8 @@ This is a pipeline that takes a list of short video links (Instagram Reels, TikT
 ## 🛠️ How It Works
 
 1. 📄 Input: A `.txt` file with Instagram or TikTok links
-2. 🎥 Download: The tool uses yt-dlp or similar to fetch the video/audio
-3. 🗣️ Transcribe: Audio is sent to a speech-to-text engine (e.g. Whisper)
+2. 🎥 Download: The tool uses yt-dlp fetch the video/audio
+3. 🗣️ Transcribe: Audio is sent to a speech-to-text engine (Whisper)
 4. 📤 Output: Clean script + metadata in JSON or CSV
 
 ## 🚀 Quickstart
