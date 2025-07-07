@@ -3,6 +3,7 @@ import os
 import subprocess
 import whisper
 import yt_dlp
+import json
 
 def download_video(url, output_dir="downloads"):
     os.makedirs(output_dir, exist_ok=True)
@@ -33,8 +34,11 @@ def pipeline(url):
     print("Transcribing video...")
     transcript = transcribe_video(video_path)
     print("Transcription complete.")
-    return transcript
 
+    os.remove(video_path)
+    print(f"Deleted {video_path}")
+
+    return transcript
 
 def extract_links(file_path):
     with open(file_path, 'r') as file:
@@ -45,8 +49,28 @@ def extract_links(file_path):
     links = re.findall(pattern, content)
     return links
 
+def update_script_in_json(json_file, link, script_text):
+    with open(json_file, "r") as f:
+        data = json.load(f)
+
+    updated = False
+    for entry in data:
+        if entry.get("link") == link:
+            entry["script"] = script_text
+            updated = True
+            break
+
+    if updated:
+        with open(json_file, "w") as f:
+            json.dump(data, f, indent=2)
+    else:
+        print(f"⚠️ Link not found in JSON: {link}")
+
 file_path = 'video_links.txt'
 links = extract_links(file_path)
     
 for link in links:
-    pipeline(link)
+    # print(pipeline(link))
+
+    transcript = pipeline(link)
+    update_script_in_json("hooks.json", link, transcript)
