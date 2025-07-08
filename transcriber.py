@@ -27,18 +27,23 @@ def transcribe_video(video_path, model_size="base"):
     return result["text"]
 
 def pipeline(url):
-    print("Downloading video...")
-    video_path = download_video(url)
-    print(f"Video downloaded to {video_path}")
+    try:
+        print("Downloading video...")
+        video_path = download_video(url)
+        print(f"Video downloaded to {video_path}")
 
-    print("Transcribing video...")
-    transcript = transcribe_video(video_path)
-    print("Transcription complete.")
+        print("Transcribing video...")
+        transcript = transcribe_video(video_path).strip()
+        print("Transcription complete.")
 
-    os.remove(video_path)
-    print(f"Deleted {video_path}")
+        os.remove(video_path)
+        print(f"Deleted {video_path}")
 
-    return transcript
+        return transcript
+    
+    except Exception as e:
+        print(f"Error processing {url}: {e}")
+        return ""
 
 def extract_links(file_path):
     with open(file_path, 'r') as file:
@@ -70,7 +75,11 @@ file_path = 'video_links.txt'
 links = extract_links(file_path)
     
 for link in links:
-    # print(pipeline(link))
-
     transcript = pipeline(link)
-    update_script_in_json("hooks.json", link, transcript)
+
+    if transcript == "":
+        print("⚠️ Skipped.")
+        continue
+
+    print(transcript)
+    # update_script_in_json("example.json", link, transcript)
